@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>curlp · HTTP request workbench</title>
+    <script>try { var t = localStorage.getItem('curlp-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+    <!-- TOP BAR: brand · request bar · actions -->
+    <header class="topbar">
+        <div class="brand"><span class="prompt">&gt;_</span><b>curlp</b></div>
+
+        <div class="urlbar">
+            <span id="methodTag" class="mth m-GET">GET</span>
+            <input id="target" class="url mono" placeholder="https://target.example.com" spellcheck="false" autocomplete="off">
+            <details class="menu" id="optMenu">
+                <summary class="opt-btn" title="Request options">Options</summary>
+                <div class="menu-body">
+                    <label class="check"><input type="checkbox" id="optTls" checked> Ignore TLS errors</label>
+                    <label class="check"><input type="checkbox" id="optRedir"> Follow redirects</label>
+                    <label class="check">Timeout <input type="number" id="optTimeout" class="num" value="30" min="1" max="300"> s</label>
+                </div>
+            </details>
+        </div>
+
+        <div class="actions">
+            <button id="saveBtn" class="btn ghost" title="Update the selected request, or save a new one">Save</button>
+            <button id="copyBtn" class="btn ghost">Copy cURL</button>
+            <button id="themeBtn" class="icon" title="Switch light / dark theme" aria-label="Switch theme">
+                <svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+            </button>
+            <button id="sendBtn" class="btn primary" title="Ctrl + Enter"><span id="inflight" class="inflight"></span>Send <kbd>Ctrl ↵</kbd></button>
+        </div>
+    </header>
+
+    <!-- SIDEBAR: add by pasting a cURL command, then the saved list -->
+    <aside class="side">
+        <div class="add">
+            <label for="addIn">Add request</label>
+            <textarea id="addIn" class="mono" spellcheck="false" placeholder="Paste a cURL command (bash, cmd or PowerShell)…"></textarea>
+            <div class="add-row">
+                <button id="addBtn" class="btn primary">Add &amp; parse</button>
+                <span class="hint">Ctrl ↵ or just paste</span>
+            </div>
+        </div>
+        <div class="side-h"><span>Requests <em id="savedCount">0</em></span><button id="clearSaved" class="link">Clear all</button></div>
+        <div class="side-s"><input id="savedFilter" class="field" placeholder="Filter by method, host, path…"></div>
+        <div id="savedList" class="saved"></div>
+    </aside>
+
+    <!-- WORKSPACE -->
+    <main class="main">
+        <section class="pane">
+            <div class="pane-h">
+                <span>Request</span>
+                <div class="tabs"><button id="prettyBody" class="mini" title="Pretty-print the JSON body">Beautify</button><button id="minBody" class="mini" title="Minify the JSON body">Minify</button></div>
+                <label class="check"><input type="checkbox" id="wrapReq" checked> Wrap</label>
+            </div>
+            <div class="editor" id="editor">
+                <pre id="reqHl" class="layer hl" aria-hidden="true"></pre>
+                <textarea id="reqText" class="layer ta" spellcheck="false" autocomplete="off"></textarea>
+            </div>
+        </section>
+
+        <section class="pane">
+            <div class="pane-h">
+                <span>Response</span>
+                <div class="nav"><button id="histPrev" class="mini" title="Previous request / response">◀</button><span id="histPos">–</span><button id="histNext" class="mini" title="Next request / response">▶</button></div>
+                <div class="tabs" id="respTabs">
+                    <button data-v="pretty" class="active">Pretty</button><button data-v="raw">Raw</button><button data-v="headers">Headers</button><button data-v="hex">Hex</button>
+                </div>
+                <label class="check"><input type="checkbox" id="wrapResp" checked> Wrap</label>
+            </div>
+            <div id="respMeta" class="meta"></div>
+            <pre id="respView" class="resp wrap"></pre>
+        </section>
+    </main>
+</div>
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
